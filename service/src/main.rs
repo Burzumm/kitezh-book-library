@@ -44,7 +44,11 @@ async fn main() -> io::Result<()> {
             // register simple route, handle all methods
             .service(base_handlers::home)
             .service(handlers::book_items_handlers::add_book_item)
-            .service(handlers::book_items_handlers::get_book_items)
+            .service(handlers::book_items_handlers::update_book_item)
+            .service(handlers::book_items_handlers::get_book_item_by_id)
+            .service(handlers::book_items_handlers::get_book_item_by_name)
+            .service(handlers::book_items_handlers::get_all_books_items)
+            .service(handlers::book_items_handlers::delete_book_item)
             // with path parameters
             // async response body
             .service(
