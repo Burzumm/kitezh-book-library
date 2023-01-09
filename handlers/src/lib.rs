@@ -19,7 +19,7 @@ pub mod book_items_handlers {
             "admin".to_string(),
             "admin".to_string(),
         );
-        let result = repo.get_all(0, 0).await;
+        let result = repo.find_all(0, 0).await;
         match result {
             Ok(items) => {
                 log::info!("get book items success");
