@@ -7,7 +7,6 @@ use actix_web::{
         header::{self},
         Method, StatusCode,
     },
-    
     middleware, web, App, HttpRequest, HttpResponse, HttpServer,
 };
 use mongodb::Client;
@@ -45,6 +44,7 @@ async fn main() -> io::Result<()> {
             // register simple route, handle all methods
             .service(base_handlers::home)
             .service(handlers::book_items_handlers::add_book_item)
+            .service(handlers::book_items_handlers::get_book_items)
             // with path parameters
             // async response body
             .service(

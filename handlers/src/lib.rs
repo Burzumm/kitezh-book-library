@@ -1,21 +1,38 @@
 mod dto;
 
 pub mod book_items_handlers {
-    
-    
+
     use actix_web::web::Json;
-    use actix_web::{
-        post, HttpResponse,
-    };
+    use actix_web::{get, post, HttpResponse};
     use uuid::Uuid;
 
-    
     use dal::models::BookItem;
     use dal::repositories::BookItemRepositoryTrait;
 
     use crate::dto::BookItemDto;
 
-    #[post("/book_item")]
+    #[get("/book_items")]
+    pub async fn get_book_items() -> HttpResponse {
+        let repo = dal::repositories::BookItemRepository::new(
+            "mongodb://localhost:27017".to_string(),
+            "test".to_string(),
+            "admin".to_string(),
+            "admin".to_string(),
+        );
+        let result = repo.get_all(0, 0).await;
+        match result {
+            Ok(items) => {
+                log::info!("get book items success");
+                HttpResponse::Ok().json(items)
+            }
+            Err(err) => {
+                log::warn!("book added failed {}", err);
+                HttpResponse::InternalServerError().body(err.to_string())
+            }
+        }
+    }
+
+    #[post("/book_items")]
     pub async fn add_book_item(form: Json<BookItemDto>) -> HttpResponse {
         let repo = dal::repositories::BookItemRepository::new(
             "mongodb://localhost:27017".to_string(),
@@ -49,10 +66,8 @@ pub mod base_handlers {
     use actix_session::Session;
     use actix_web::{
         get,
-        http::{
-            header::{ContentType},
-            Method, StatusCode,
-        }, Either, HttpRequest, HttpResponse, Responder, Result,
+        http::{header::ContentType, Method, StatusCode},
+        Either, HttpRequest, HttpResponse, Responder, Result,
     };
 
     /// simple index handler
